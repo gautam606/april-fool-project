@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>QuantumBrew™ — The Future of Coffee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0f;
+      --surface: #111118;
+      --accent: #c8ff00;
+      --accent2: #00f0ff;
+      --text: #f0f0f0;
+      --muted: #666680;
+      --border: rgba(200,255,0,0.15);
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Syne', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      overflow-x: hidden;
+      cursor: none;
+    }
+
+    /* Custom Cursor */
+    #cursor {
+      width: 12px; height: 12px;
+      background: var(--accent);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s ease, width 0.2s, height 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    #cursor-ring {
+      width: 38px; height: 38px;
+      border: 1.5px solid rgba(200,255,0,0.5);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9998;
+      transition: transform 0.18s ease, width 0.2s, height 0.2s;
+      transform: translate(-50%, -50%);
+    }
+    body:hover #cursor { transform: translate(-50%, -50%) scale(1); }
+
+    /* NOISE OVERLAY */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      pointer-events: none; z-index: 1000; opacity: 0.35;
+    }
+
+    /* NAV */
+    nav {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.4rem 3rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0;
+      background: rgba(10,10,15,0.92);
+      backdrop-filter: blur(20px);
+      z-index: 100;
+    }
+    .logo {
+      font-weight: 800; font-size: 1.1rem; letter-spacing: -0.5px;
+      color: var(--accent);
+    }
+    .logo span { color: var(--text); }
+    .nav-links { display: flex; gap: 2.5rem; }
+    .nav-links a {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem; color: var(--muted);
+      text-decoration: none; letter-spacing: 0.05em;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--accent); }
+    .nav-badge {
+      background: var(--accent);
+      color: #000;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.25rem 0.7rem;
+      border-radius: 2px;
+      letter-spacing: 0.1em;
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+    @keyframes pulse-badge {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 4rem 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Geometric background */
+    .hero::after {
+      content: '';
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 50% at 50% 60%, rgba(200,255,0,0.06) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 40% at 80% 20%, rgba(0,240,255,0.05) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .hero-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--accent);
+      border: 1px solid var(--border);
+      padding: 0.4rem 1.2rem;
+      border-radius: 2px;
+      margin-bottom: 2rem;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .hero-title {
+      font-size: clamp(3.5rem, 10vw, 8rem);
+      font-weight: 800;
+      line-height: 0.95;
+      letter-spacing: -0.03em;
+      margin-bottom: 1.5rem;
+      animation: fadeDown 0.8s 0.15s ease both;
+    }
+    .hero-title em {
+      font-style: normal;
+      color: transparent;
+      -webkit-text-stroke: 1.5px var(--accent);
+    }
+
+    .hero-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.95rem;
+      color: var(--muted);
+      max-width: 480px;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+      animation: fadeDown 0.8s 0.3s ease both;
+    }
+
+    /* Product Visual */
+    .product-visual {
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 35%, #2a2a20 0%, #0f0f0f 70%);
+      border: 1px solid rgba(200,255,0,0.2);
+      margin-bottom: 3rem;
+      position: relative;
+      display: flex; align-items: center; justify-content: center;
+      animation: fadeUp 0.8s 0.1s ease both, float 4s 1s ease-in-out infinite;
+      box-shadow: 0 0 80px rgba(200,255,0,0.1), 0 0 200px rgba(200,255,0,0.04);
+    }
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    .product-visual::before {
+      content: '';
+      position: absolute;
+      width: 260px; height: 260px;
+      border-radius: 50%;
+      border: 1px dashed rgba(200,255,0,0.1);
+      animation: spin 20s linear infinite;
+    }
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .product-emoji { font-size: 5rem; }
+
+    /* Stats strip */
+    .stats {
+      display: flex; gap: 0;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 3rem;
+      animation: fadeUp 0.8s 0.5s ease both;
+    }
+    .stat {
+      padding: 1rem 2rem;
+      border-right: 1px solid var(--border);
+      text-align: left;
+    }
+    .stat:last-child { border-right: none; }
+    .stat-val {
+      font-size: 1.5rem; font-weight: 800;
+      color: var(--accent);
+      display: block;
+    }
+    .stat-lbl {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* CTA Button */
+    .cta-wrap { animation: fadeUp 0.8s 0.6s ease both; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 0.75rem;
+      background: var(--accent);
+      color: #000;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem; font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 1.1rem 2.5rem;
+      border: none; border-radius: 3px;
+      cursor: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-btn::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.2) 0%, transparent 50%);
+      opacity: 0; transition: opacity 0.2s;
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(200,255,0,0.35); }
+    .cta-btn:hover::before { opacity: 1; }
+    .cta-btn:active { transform: scale(0.97); }
+    .btn-arrow { font-size: 1.1rem; transition: transform 0.2s; }
+    .cta-btn:hover .btn-arrow { transform: translateX(4px); }
+
+    /* FEATURES SECTION */
+    .features {
+      padding: 6rem 3rem;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 0.25em;
+      color: var(--accent2);
+      margin-bottom: 1rem;
+    }
+    .section-title {
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      margin-bottom: 4rem;
+    }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.5px;
+      background: var(--border);
+      border: 1px solid var(--border);
+    }
+    .feature-card {
+      background: var(--surface);
+      padding: 2.5rem;
+      transition: background 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .feature-card:hover { background: #16161f; }
+    .feature-card::before {
+      content: '';
+      position: absolute; bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+    .feature-card:hover::before { transform: scaleX(1); }
+    .feature-icon { font-size: 2rem; margin-bottom: 1.2rem; }
+    .feature-name {
+      font-size: 1.1rem; font-weight: 700;
+      margin-bottom: 0.6rem;
+    }
+    .feature-desc {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    /* Spec strip */
+    .spec-strip {
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 3rem;
+      display: flex;
+      justify-content: center;
+      gap: 5rem;
+      flex-wrap: wrap;
+    }
+    .spec-item { text-align: center; }
+    .spec-num {
+      font-size: 2.5rem; font-weight: 800;
+      color: var(--accent);
+      display: block;
+    }
+    .spec-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; color: var(--muted);
+      letter-spacing: 0.1em;
+    }
+
+    /* Footer */
+    footer {
+      padding: 2.5rem 3rem;
+      border-top: 1px solid var(--border);
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 1rem;
+    }
+    .footer-logo { font-weight: 800; font-size: 1rem; color: var(--accent); }
+    .footer-note {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem; color: var(--muted);
+    }
+
+    /* ============================================ */
+    /* APRIL FOOLS OVERLAY */
+    /* ============================================ */
+    #fool-overlay {
+      position: fixed; inset: 0;
+      background: #0a0a0f;
+      z-index: 9000;
+      display: flex;
+      flex-direction: column;
+      align-items: center; justify-content: center;
+      opacity: 0; pointer-events: none;
+      transition: opacity 0.3s;
+    }
+    #fool-overlay.show {
+      opacity: 1; pointer-events: all;
+    }
+
+    .confetti-container {
+      position: absolute; inset: 0;
+      overflow: hidden; pointer-events: none;
+    }
+    .confetti-piece {
+      position: absolute;
+      width: 10px; height: 10px;
+      top: -20px;
+      border-radius: 2px;
+      animation: confetti-fall linear infinite;
+      opacity: 0.9;
+    }
+    @keyframes confetti-fall {
+      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+      80% { opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+    }
+
+    .fool-card {
+      background: #111118;
+      border: 2px solid rgba(200,255,0,0.4);
+      border-radius: 12px;
+      padding: 4rem 3.5rem;
+      text-align: center;
+      max-width: 560px;
+      width: 90%;
+      position: relative;
+      z-index: 2;
+      animation: fool-pop 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes fool-pop {
+      from { transform: scale(0.5) rotate(-5deg); opacity: 0; }
+      to { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+
+    .fool-emoji-row {
+      font-size: 3.5rem;
+      margin-bottom: 1.2rem;
+      display: flex; justify-content: center; gap: 0.5rem;
+      animation: wiggle 0.6s 0.5s ease infinite alternate;
+    }
+    @keyframes wiggle {
+      from { transform: rotate(-3deg); }
+      to { transform: rotate(3deg); }
+    }
+
+    .fool-title {
+      font-size: clamp(3rem, 10vw, 5.5rem);
+      font-weight: 800;
+      line-height: 0.9;
+      letter-spacing: -0.04em;
+      margin-bottom: 1rem;
+    }
+    .fool-title .a { color: #ff4444; }
+    .fool-title .p { color: #ff9900; }
+    .fool-title .r { color: var(--accent); }
+    .fool-title .i { color: #00f0ff; }
+    .fool-title .l { color: #ff44cc; }
+    .fool-title .f { color: #ff4444; }
+    .fool-title .o { color: #ff9900; }
+    .fool-title .o2 { color: var(--accent); }
+    .fool-title .ls { color: #00f0ff; }
+    .fool-title .bang { color: #ff44cc; }
+
+    .fool-subtitle {
+      font-family: 'Space Mono', monospace;
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.7;
+      margin-bottom: 2rem;
+    }
+    .fool-subtitle strong { color: var(--text); }
+
+    .fool-msg {
+      font-size: 1.15rem;
+      color: var(--text);
+      margin-bottom: 2.5rem;
+      line-height: 1.5;
+    }
+
+    .fool-close {
+      background: transparent;
+      border: 1.5px solid var(--border);
+      color: var(--muted);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      padding: 0.8rem 2rem;
+      border-radius: 3px;
+      cursor: none;
+      transition: all 0.2s;
+      letter-spacing: 0.08em;
+    }
+    .fool-close:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: rgba(200,255,0,0.05);
+    }
+
+    .fool-date-tag {
+      position: absolute;
+      top: -14px; left: 50%; transform: translateX(-50%);
+      background: #ff4444;
+      color: #fff;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem; font-weight: 700;
+      padding: 0.3rem 1rem;
+      border-radius: 2px;
+      letter-spacing: 0.15em;
+      white-space: nowrap;
+    }
+
+    /* Keyframes */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scrolling ticker */
+    .ticker-wrap {
+      overflow: hidden;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 0.9rem 0;
+      background: rgba(200,255,0,0.03);
+    }
+    .ticker {
+      display: flex; gap: 4rem;
+      animation: ticker-scroll 20s linear infinite;
+      white-space: nowrap;
+    }
+    .ticker-item {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.72rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      flex-shrink: 0;
+    }
+    .ticker-item span { color: var(--accent); margin-right: 0.5rem; }
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    @media (max-width: 640px) {
+      nav { padding: 1.2rem 1.5rem; }
+      .nav-links { display: none; }
+      .features { padding: 4rem 1.5rem; }
+      .spec-strip { gap: 2.5rem; }
+      .stats { flex-direction: column; }
+      .fool-card { padding: 3rem 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="logo">Quantum<span>Brew</span>™</div>
+    <div class="nav-links">
+      <a href="#">Technology</a>
+      <a href="#">Science</a>
+      <a href="#">Patents</a>
+      <a href="#">Press</a>
+    </div>
+    <div class="nav-badge">NEW INVENTION</div>
+  </nav>
+
+  <!-- TICKER -->
+  <div class="ticker-wrap">
+    <div class="ticker" id="ticker">
+      <span class="ticker-item"><span>✦</span> World's First Quantum Coffee Brewer</span>
+      <span class="ticker-item"><span>✦</span> Brews Coffee Before You Think Of It</span>
+      <span class="ticker-item"><span>✦</span> 0.000001ms Brew Time</span>
+      <span class="ticker-item"><span>✦</span> Patent Pending · April 2026</span>
+      <span class="ticker-item"><span>✦</span> World's First Quantum Coffee Brewer</span>
+      <span class="ticker-item"><span>✦</span> Brews Coffee Before You Think Of It</span>
+      <span class="ticker-item"><span>✦</span> 0.000001ms Brew Time</span>
+      <span class="ticker-item"><span>✦</span> Patent Pending · April 2026</span>
+    </div>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-tag">BREAKTHROUGH INVENTION — APRIL 2026</div>
+
+    <div class="product-visual">
+      <div class="product-emoji">☕</div>
+    </div>
+
+    <h1 class="hero-title">The World's<br/>First <em>Quantum</em><br/>Coffee Maker</h1>
+
+    <p class="hero-sub">
+      QuantumBrew™ uses entangled coffee particles to teleport
+      a perfectly brewed espresso directly into your mug —
+      before you even feel tired.
+    </p>
+
+    <div class="stats">
+      <div class="stat">
+        <span class="stat-val">0.000001<small style="font-size:0.6em">ms</small></span>
+        <span class="stat-lbl">BREW TIME</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">∞</span>
+        <span class="stat-lbl">FLAVORS</span>
+      </div>
+      <div class="stat">
+        <span class="stat-val">100%</span>
+        <span class="stat-lbl">QUANTUM MAGIC</span>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <button class="cta-btn" onclick="triggerFool()">
+        DISCOVER THE TECHNOLOGY
+        <span class="btn-arrow">→</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section class="features">
+    <div class="section-label">// CORE TECHNOLOGY</div>
+    <h2 class="section-title">Engineered at the<br/>subatomic level.</h2>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚛️</div>
+        <div class="feature-name">Quantum Entanglement Brewing</div>
+        <p class="feature-desc">Coffee molecules are quantum-entangled in our Swiss lab and teleported to your cup at the speed of thought.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧠</div>
+        <div class="feature-name">Pre-Cognitive Detection</div>
+        <p class="feature-desc">Our neural-brew AI detects caffeine cravings 45 minutes before you're even aware of them.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🌌</div>
+        <div class="feature-name">Multi-Dimensional Roasting</div>
+        <p class="feature-desc">Beans are roasted simultaneously across 11 parallel dimensions for a truly out-of-this-world flavor profile.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔋</div>
+        <div class="feature-name">Zero-Point Energy Powered</div>
+        <p class="feature-desc">Harvests vacuum energy from the fabric of spacetime. No electricity required. Truly self-sustaining.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🧬</div>
+        <div class="feature-name">DNA-Personalized Blend</div>
+        <p class="feature-desc">A single hair sample unlocks your perfect genetic roast profile. Updated daily as your DNA evolves.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📡</div>
+        <div class="feature-name">Galactic Freshness Sync</div>
+        <p class="feature-desc">Syncs bean freshness data with NASA's deep space coffee bean satellites orbiting Jupiter.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPEC STRIP -->
+  <div class="spec-strip">
+    <div class="spec-item">
+      <span class="spec-num">11</span>
+      <span class="spec-label">DIMENSIONS ROASTED IN</span>
+    </div>
+    <div class="spec-item">
+      <span class="spec-num">∞°</span>
+      <span class="spec-label">BREW TEMPERATURE</span>
+    </div>
+    <div class="spec-item">
+      <span class="spec-num">99.9%</span>
+      <span class="spec-label">QUANTUM EFFICIENCY</span>
+    </div>
+    <div class="spec-item">
+      <span class="spec-num">$0</span>
+      <span class="spec-label">ELECTRICITY COST</span>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">QuantumBrew™</div>
+    <div class="footer-note">© 2026 QuantumBrew Industries · All rights reserved</div>
+    <div class="footer-note">Patent Pending · World Patent No. QB-2026-FAKE</div>
+  </footer>
+
+  <!-- ======================== -->
+  <!-- APRIL FOOLS OVERLAY -->
+  <!-- ======================== -->
+  <div id="fool-overlay">
+    <div class="confetti-container" id="confetti"></div>
+    <div class="fool-card">
+      <div class="fool-date-tag">📅 APRIL 1ST, 2026</div>
+      <div class="fool-emoji-row">🎉 😂 🎊 🤣 🎈</div>
+      <div class="fool-title">
+        <span class="a">A</span><span class="p">P</span><span class="r">R</span><span class="i">I</span><span class="l">L</span><br/>
+        <span class="f">F</span><span class="o">O</span><span class="o2">O</span><span class="ls">L</span><span class="bang">S!</span>
+      </div>
+      <p class="fool-subtitle">
+        There is <strong>no quantum coffee machine.</strong><br/>
+        There are no entangled espresso particles.<br/>
+        NASA does not have coffee bean satellites. 🛸
+      </p>
+      <p class="fool-msg">
+        😆 You got played! <br/>
+        Happy April Fools' Day! Go make your coffee<br/>
+        <em>the old-fashioned way.</em> ☕
+      </p>
+      <button class="fool-close" onclick="closeFool()">OK OK, YOU GOT ME 😭</button>
+    </div>
+  </div>
+
+  <script>
+    // Custom cursor
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    document.addEventListener('mousemove', e => {
+      mx = e.clientX; my = e.clientY;
+      cursor.style.left = mx + 'px';
+      cursor.style.top = my + 'px';
+    });
+    function animateRing() {
+      rx += (mx - rx) * 0.12;
+      ry += (my - ry) * 0.12;
+      ring.style.left = rx + 'px';
+      ring.style.top = ry + 'px';
+      requestAnimationFrame(animateRing);
+    }
+    animateRing();
+
+    document.querySelectorAll('button, a').forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(2.5)';
+        ring.style.width = '60px'; ring.style.height = '60px';
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.style.transform = 'translate(-50%, -50%) scale(1)';
+        ring.style.width = '38px'; ring.style.height = '38px';
+      });
+    });
+
+    // Confetti generator
+    function spawnConfetti() {
+      const container = document.getElementById('confetti');
+      container.innerHTML = '';
+      const colors = ['#ff4444','#ff9900','#c8ff00','#00f0ff','#ff44cc','#ffffff','#ffff00','#44ff88'];
+      const shapes = ['square','circle'];
+      for (let i = 0; i < 90; i++) {
+        const p = document.createElement('div');
+        p.className = 'confetti-piece';
+        const color = colors[Math.floor(Math.random() * colors.length)];
+        const size = Math.random() * 10 + 6;
+        const shape = shapes[Math.floor(Math.random() * shapes.length)];
+        p.style.cssText = `
+          left: ${Math.random() * 100}%;
+          width: ${size}px; height: ${size}px;
+          background: ${color};
+          border-radius: ${shape === 'circle' ? '50%' : '2px'};
+          animation-duration: ${Math.random() * 3 + 2}s;
+          animation-delay: ${Math.random() * 2}s;
+        `;
+        container.appendChild(p);
+      }
+    }
+
+    function triggerFool() {
+      const overlay = document.getElementById('fool-overlay');
+      overlay.classList.add('show');
+      spawnConfetti();
+      // Respawn confetti periodically
+      setInterval(spawnConfetti, 5000);
+    }
+
+    function closeFool() {
+      const overlay = document.getElementById('fool-overlay');
+      overlay.style.opacity = '0';
+      setTimeout(() => {
+        overlay.classList.remove('show');
+        overlay.style.opacity = '';
+      }, 400);
+    }
+
+    // Close on overlay background click
+    document.getElementById('fool-overlay').addEventListener('click', function(e) {
+      if (e.target === this) closeFool();
+    });
+  </script>
+</body>
+</html>
