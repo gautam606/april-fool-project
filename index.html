@@ -28,7 +28,6 @@
       cursor: none;
     }
 
-    /* Custom Cursor */
     #cursor {
       width: 12px; height: 12px;
       background: var(--accent);
@@ -51,7 +50,6 @@
     }
     body:hover #cursor { transform: translate(-50%, -50%) scale(1); }
 
-    /* NOISE OVERLAY */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -59,7 +57,7 @@
       pointer-events: none; z-index: 1000; opacity: 0.35;
     }
 
-    /* NAV */
+    
     nav {
       display: flex; justify-content: space-between; align-items: center;
       padding: 1.4rem 3rem;
@@ -97,7 +95,7 @@
       50% { opacity: 0.6; }
     }
 
-    /* HERO */
+    
     .hero {
       min-height: 100vh;
       display: flex; flex-direction: column;
@@ -108,7 +106,7 @@
       overflow: hidden;
     }
 
-    /* Geometric background */
+    
     .hero::after {
       content: '';
       position: absolute; inset: 0;
@@ -154,7 +152,7 @@
       animation: fadeDown 0.8s 0.3s ease both;
     }
 
-    /* Product Visual */
+  
     .product-visual {
       width: 220px; height: 220px;
       border-radius: 50%;
@@ -184,7 +182,7 @@
     }
     .product-emoji { font-size: 5rem; }
 
-    /* Stats strip */
+    
     .stats {
       display: flex; gap: 0;
       border: 1px solid var(--border);
@@ -211,7 +209,7 @@
       letter-spacing: 0.1em;
     }
 
-    /* CTA Button */
+    
     .cta-wrap { animation: fadeUp 0.8s 0.6s ease both; }
     .cta-btn {
       display: inline-flex; align-items: center; gap: 0.75rem;
@@ -239,7 +237,7 @@
     .btn-arrow { font-size: 1.1rem; transition: transform 0.2s; }
     .cta-btn:hover .btn-arrow { transform: translateX(4px); }
 
-    /* FEATURES SECTION */
+   
     .features {
       padding: 6rem 3rem;
       max-width: 1100px;
@@ -294,7 +292,7 @@
       line-height: 1.7;
     }
 
-    /* Spec strip */
+   
     .spec-strip {
       border-top: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
@@ -316,7 +314,6 @@
       letter-spacing: 0.1em;
     }
 
-    /* Footer */
     footer {
       padding: 2.5rem 3rem;
       border-top: 1px solid var(--border);
@@ -329,9 +326,7 @@
       font-size: 0.7rem; color: var(--muted);
     }
 
-    /* ============================================ */
-    /* APRIL FOOLS OVERLAY */
-    /* ============================================ */
+   
     #fool-overlay {
       position: fixed; inset: 0;
       background: #0a0a0f;
@@ -467,7 +462,7 @@
       to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Scrolling ticker */
+    
     .ticker-wrap {
       overflow: hidden;
       border-top: 1px solid var(--border);
@@ -508,7 +503,6 @@
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
 
-  <!-- NAV -->
   <nav>
     <div class="logo">Quantum<span>Brew</span>™</div>
     <div class="nav-links">
@@ -520,7 +514,7 @@
     <div class="nav-badge">NEW INVENTION</div>
   </nav>
 
-  <!-- TICKER -->
+  
   <div class="ticker-wrap">
     <div class="ticker" id="ticker">
       <span class="ticker-item"><span>✦</span> World's First Quantum Coffee Brewer</span>
@@ -573,7 +567,7 @@
     </div>
   </section>
 
-  <!-- FEATURES -->
+  
   <section class="features">
     <div class="section-label">// CORE TECHNOLOGY</div>
     <h2 class="section-title">Engineered at the<br/>subatomic level.</h2>
@@ -612,7 +606,7 @@
     </div>
   </section>
 
-  <!-- SPEC STRIP -->
+ 
   <div class="spec-strip">
     <div class="spec-item">
       <span class="spec-num">11</span>
@@ -632,16 +626,14 @@
     </div>
   </div>
 
-  <!-- FOOTER -->
+  
   <footer>
     <div class="footer-logo">QuantumBrew™</div>
     <div class="footer-note">© 2026 QuantumBrew Industries · All rights reserved</div>
     <div class="footer-note">Patent Pending · World Patent No. QB-2026-FAKE</div>
   </footer>
 
-  <!-- ======================== -->
-  <!-- APRIL FOOLS OVERLAY -->
-  <!-- ======================== -->
+  
   <div id="fool-overlay">
     <div class="confetti-container" id="confetti"></div>
     <div class="fool-card">
@@ -666,7 +658,7 @@
   </div>
 
   <script>
-    // Custom cursor
+    
     const cursor = document.getElementById('cursor');
     const ring = document.getElementById('cursor-ring');
     let mx = 0, my = 0, rx = 0, ry = 0;
@@ -695,7 +687,6 @@
       });
     });
 
-    // Confetti generator
     function spawnConfetti() {
       const container = document.getElementById('confetti');
       container.innerHTML = '';
@@ -723,7 +714,7 @@
       const overlay = document.getElementById('fool-overlay');
       overlay.classList.add('show');
       spawnConfetti();
-      // Respawn confetti periodically
+    
       setInterval(spawnConfetti, 5000);
     }
 
@@ -736,7 +727,7 @@
       }, 400);
     }
 
-    // Close on overlay background click
+    
     document.getElementById('fool-overlay').addEventListener('click', function(e) {
       if (e.target === this) closeFool();
     });
